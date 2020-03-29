@@ -205,7 +205,6 @@ function tsvFishToData(tsv) {
     Object.keys(tmp).forEach(k => {
         result.push(tmp[k]);
     });
-    console.log(result);
 
     return result;
 }
