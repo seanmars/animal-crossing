@@ -1,21 +1,3 @@
-function* range(start, end, max) {
-    if (max !== undefined && start > max) {
-        if (end >= start) {
-            return;
-        }
-
-        start = 0;
-    }
-
-    yield start;
-
-    if (start === end) {
-        return;
-    }
-
-    yield* range(start + 1, end, max);
-}
-
 function tsvJSON(tsv) {
     const lines = tsv.split('\n');
     const headers = lines.slice(0, 1)[0].split('\t');

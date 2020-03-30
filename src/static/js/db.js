@@ -1,5 +1,5 @@
 /**
- * @returns Array<{}>
+ * @returns Array<Object>
  */
 function createDb() {
     return [

@@ -1,0 +1,17 @@
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dt-center,
+.dt-head-center,
+.dt-body-center {
+  text-align: center;
+}
+
+.table-nostriped tbody tr:nth-of-type(even),
+.table-nostriped tbody tr:nth-of-type(odd) {
+  background-color: transparent;
+}
