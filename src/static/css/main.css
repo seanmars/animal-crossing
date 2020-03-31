@@ -15,3 +15,35 @@ hr {
 .table-nostriped tbody tr:nth-of-type(odd) {
   background-color: transparent;
 }
+
+.gridTable {
+  font-size: 0;
+}
+
+.gridBase {
+  display: inline-block;
+  font-size: 1rem;
+  margin: 0;
+  text-align: center;
+  border: 1px solid gray;
+  width: 25px;
+  height: 25px;
+}
+
+.gridBegin {
+  border-top-left-radius: 5px !important;
+  border-bottom-left-radius: 5px !important;
+}
+
+.gridEnd {
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
+
+.gridBase.enable {
+  background-color: wheat;
+}
+
+.gridBase.disable {
+  background-color: lightgray;
+}

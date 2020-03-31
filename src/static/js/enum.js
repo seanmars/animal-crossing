@@ -8,6 +8,20 @@ const Locations = {
     Pond: { code: 6, name: "池塘" },
     SeaWhenRaining: { code: 7, name: "海洋(下雨時)" },
     Dock: { code: 8, name: "碼頭" },
+
+    getName: function (code) {
+        code = parseInt(code);
+        for (const key in this) {
+            if (this.hasOwnProperty(key)) {
+                const element = this[key];
+                if (element.code == code) {
+                    return element.name;
+                }
+            }
+        }
+
+        return this.None.name;
+    },
 }
 
 const ShadowSize = {
@@ -21,10 +35,38 @@ const ShadowSize = {
     HugeWithFin: { code: 7, name: '巨大有鰭' },
     Massive: { code: 8, name: '超巨大' },
     Narrow: { code: 9, name: '細長' },
+
+    getName: function (code) {
+        code = parseInt(code);
+        for (const key in this) {
+            if (this.hasOwnProperty(key)) {
+                const element = this[key];
+                if (element.code == code) {
+                    return element.name;
+                }
+            }
+        }
+
+        return this.None.name;
+    },
 }
 
 const HemisphereType = {
     None: { code: 0, name: '無' },
     Northern: { code: 1, name: '北半球' },
     Southern: { code: 2, name: '南半球' },
+
+    getName: function (code) {
+        code = parseInt(code);
+        for (const key in this) {
+            if (this.hasOwnProperty(key)) {
+                const element = this[key];
+                if (element.code == code) {
+                    return element.name;
+                }
+            }
+        }
+
+        return this.None.name;
+    },
 }

@@ -46,10 +46,12 @@ function generateNav(options) {
  */
 function generateKindPill(target) {
     const kinds = [
-        '魚類', '昆蟲'
+        '魚類',
+        // '昆蟲',
     ];
     const items = [
-        'fish', 'bug'
+        'fish',
+        // 'bug',
     ];
 
     generateNav({
