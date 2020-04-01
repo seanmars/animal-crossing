@@ -114,5 +114,41 @@ function main() {
 }
 
 $(document).ready(() => {
+    $('#currentTime').on('change.datetimepicker', e => {
+        let timeDisplay = document.getElementById('timeDisplay');
+
+        /** @type {moment.Moment} */
+        let date = e.date;
+
+        let t = `${date.format(DefaultDateFormat)}:00`;
+        timeDisplay.setAttribute('value', t);
+
+        timeDisplay.dataset.month = date.month() + 1;
+        timeDisplay.dataset.hour = date.hour();
+        console.log(timeDisplay.dataset);
+    });
+
+    $('#currentTime').datetimepicker({
+        format: DefaultDateFormat,
+        icons: {
+            time: 'fas fa-clock',
+            date: 'fas fa-calendar',
+            up: 'fas fa-arrow-up',
+            down: 'fas fa-arrow-down',
+            previous: 'fas fa-chevron-left',
+            next: 'fas fa-chevron-right',
+            today: 'fas fa-calendar-day',
+            clear: 'fas fa-calendar-minus',
+            close: 'fas fa-times'
+        },
+        inline: true,
+        sideBySide: true,
+        buttons: {
+            showToday: true,
+            showClear: false,
+            showClose: false
+        }
+    });
+
     main();
 });

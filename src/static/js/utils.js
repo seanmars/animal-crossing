@@ -1,3 +1,5 @@
+const DefaultDateFormat = 'YYYY-MM-DD HH';
+
 const CurrencyFormatter = new Intl.NumberFormat();
 const AllHours = [...range(0, 23)];
 const AllMonths = [...range(1, 12)];
@@ -36,14 +38,14 @@ function* range(start, end, max) {
  * @param {Array<number>} availableItems
  * @param {number} current
  */
-function renderGrid(allItems, availableItems, current) {
+function renderGrid(targetClass, allItems, availableItems, current) {
     if (!Array.isArray(allItems) || !Array.isArray(availableItems)) {
         console.error('Invalid input.', allItems, availableItems);
         return;
     }
 
     var div = document.createElement('div');
-    div.className = 'gridTable row justify-content-center align-self-center pl-4 pr-4';
+    div.className = `${targetClass} gridTable row justify-content-center align-self-center pl-4 pr-4`;
 
     var spans = [];
     var len = allItems.length - 1;
@@ -111,7 +113,7 @@ function getDataTableColumnConfig(kind, dataset) {
                         data: "time",
                         title: "時間",
                         render: function (data, type, row, meta) {
-                            let ele = renderGrid(AllHours, data);
+                            let ele = renderGrid('timeTable', AllHours, data);
                             return ele ? ele.outerHTML : '';
                         }
                     },
@@ -134,20 +136,18 @@ function getDataTableColumnConfig(kind, dataset) {
                         title: "月份",
                         render: function (data, type, row, meta) {
                             let northern = data[HemisphereType.Northern.code];
-                            let northernElement = renderGrid(AllMonths, northern.month);
+                            let northernElement = renderGrid('hemisphereTable', AllMonths, northern.month);
                             let northernTitle = document.createElement('span');
                             northernTitle.className = 'col gridBase gridTitle justify-content-center align-self-center mr-1 text-truncate';
                             northernTitle.textContent = HemisphereType.getName(HemisphereType.Northern.code);
                             northernElement.insertBefore(northernTitle, northernElement.firstChild);
-                            northernElement.className = 'row gridHemisphere justify-content-center align-self-center pl-3 pr-3';
 
                             let southern = data[HemisphereType.Southern.code];
-                            let southernElement = renderGrid(AllMonths, southern.month);
+                            let southernElement = renderGrid('hemisphereTable',AllMonths, southern.month);
                             let southernTitle = document.createElement('span');
                             southernTitle.className = 'col gridBase gridTitle justify-content-center align-self-center mr-1';
                             southernTitle.textContent = HemisphereType.getName(HemisphereType.Southern.code);
                             southernElement.insertBefore(southernTitle, southernElement.firstChild);
-                            southernElement.className = 'row gridHemisphere justify-content-center align-self-center pl-3 pr-3';
 
                             return northernElement.outerHTML + southernElement.outerHTML;
                         }
