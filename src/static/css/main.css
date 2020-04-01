@@ -11,37 +11,48 @@ hr {
   text-align: center;
 }
 
-.table-nostriped tbody tr:nth-of-type(even),
-.table-nostriped tbody tr:nth-of-type(odd) {
-  background-color: transparent;
-}
-
 .gridTable {
   font-size: 0;
 }
 
 .gridBase {
-  display: inline-block;
   font-size: 1rem;
-  margin: 0;
-  text-align: center;
-  border: 1px solid gray;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: solid gray;
+  border-width: 1px;
   width: 25px;
   height: 25px;
 }
 
-.gridBegin {
+.gridBase.gridBegin {
   border-top-left-radius: 5px !important;
   border-bottom-left-radius: 5px !important;
 }
 
-.gridEnd {
+.gridBase.gridEnd {
   border-top-right-radius: 5px !important;
   border-bottom-right-radius: 5px !important;
 }
 
+.gridBase.gridCurrent {
+  height: 35px !important;
+}
+
+.gridBase.gridTitle {
+  border-radius: 0.25rem;
+  margin: 3px !important;
+  padding: 0.2rem !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+.gridHemisphere {
+  height: 42px;
+}
+
 .gridBase.enable {
-  background-color: wheat;
+  background-color: bisque;
 }
 
 .gridBase.disable {

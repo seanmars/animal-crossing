@@ -86,7 +86,7 @@ function generateMonthPill(target) {
 
 function main() {
     const db = createDb();
-    console.log(db);
+    // console.log(db);
 
     var kindPill = document.getElementById('pills-kind');
     generateKindPill(kindPill);
@@ -108,7 +108,8 @@ function main() {
     $('#month-tab-0').tab('show');
 
     var config = getDataTableColumnConfig('fish', db);
-
+    $('#dataTable').DataTable(config);
+    $('#dataTable').DataTable().destroy();
     $('#dataTable').DataTable(config);
 }
 
