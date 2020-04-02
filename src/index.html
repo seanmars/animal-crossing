@@ -13,46 +13,66 @@
 
     <link rel="stylesheet" href="static/css/main.css">
 
-    <script type="text/javascript" src="static/plugin/fontawesome/js/all.min.js"></script>
-    <script type="text/javascript" src="static/plugin/moment.min.js"></script>
-    <script type="text/javascript" src="static/plugin/pouchdb-7.1.1.min.js"></script>
-    <script type="text/javascript" src="static/plugin/jquery-3.4.1.min.js"></script>
-    <script type="text/javascript" src="static/plugin/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="static/plugin/DataTables/datatables.min.js"></script>
-    <script type="text/javascript"
-        src="static/plugin/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="static/plugin/fontawesome/js/all.min.js"></script>
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="static/plugin/moment/moment.min.js"></script>
+    <script src="static/plugin/moment/locale/zh-tw.js"></script>
+
+    <script src="static/plugin/pouchdb-7.1.1.min.js"></script>
+    <script src="static/plugin/jquery-3.4.1.min.js"></script>
+    <script src="static/plugin/bootstrap-4.4.1-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/plugin/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <script src="static/plugin/DataTables/datatables.min.js"></script>
+
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 
 <body>
     <div class="container-fluid">
         <div class="m-4">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-12">
                     <!-- kind -->
                     <div class="row mb-2" id="kinds">
-                        <ul class="nav nav-pills" id="pills-kind" role="tablist"></ul>
+                        <div class="col-4"></div>
+                        <div class="col justify-content-center align-middle text-center">
+                            <ul class="nav nav-pills" id="pills-kind" role="tablist"></ul>
+                        </div>
                     </div>
 
                     <!-- month -->
                     <div class="row mb-2" id="months">
-                        <div class="justify-content-center align-middle text-center">
+                        <div class="col-4"></div>
+                        <div class="col justify-content-center align-middle text-center">
                             <ul class="nav nav-pills" id="pills-month" role="tablist"></ul>
                         </div>
                     </div>
 
-                    <!-- time -->
-                    <div class="row" id="timePicker">
-                        <div class="row col-12 mb-1">
-                            <div class="col-6">
-                                <div id="currentTime"></div>
-                            </div>
-                        </div>
-                        <div class="row col-6">
-                            <input id="timeDisplay" type="text" class="form-control" disabled/>
+                    <!-- hemisphere -->
+                    <div class="row mb-2" id="hemispheres">
+                        <div class="col-4"></div>
+                        <div class="col justify-content-center align-middle text-center">
+                            <ul class="nav nav-pills" id="pills-hemisphere" role="tablist"></ul>
                         </div>
                     </div>
+
+                    <!-- time -->
+                    <div id="timePicker">
+                        <div class="row mb-1">
+                            <div class="col"></div>
+                            <div class="col" id="currentTime"></div>
+                            <div class="col"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col">
+                                <input id="timeDisplay" type="text" class="form-control" disabled />
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

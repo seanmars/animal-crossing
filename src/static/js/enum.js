@@ -55,6 +55,7 @@ const HemisphereType = {
     None: { code: 0, name: '無' },
     Northern: { code: 1, name: '北' },
     Southern: { code: 2, name: '南' },
+    Both: { code: 3, name: 'Both' },
 
     getName: function (code) {
         code = parseInt(code);

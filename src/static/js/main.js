@@ -21,10 +21,9 @@ function generateNav(options) {
     var texts = options.texts;
 
     items.forEach((x, idx) => {
-
         var a = document.createElement('a');
         a.classList.add('nav-link');
-        a.setAttribute('id', `${prefixId}-tab-${items[idx]}`);
+        a.setAttribute('id', `${prefixId}-tab-${x}`);
         a.setAttribute('href', '#');
         a.setAttribute('role', 'tab');
         a.setAttribute('aria-controls', controls[idx]);
@@ -84,36 +83,41 @@ function generateMonthPill(target) {
     });
 }
 
-function main() {
-    const db = createDb();
-    // console.log(db);
+/**
+ *
+ * @param {HTMLDivElement} target
+ */
+function generateHemispherePill(target) {
+    const months = [
+        HemisphereType.Both.name, '北半球', '南半球'
+    ];
+    const items = [
+        HemisphereType.Both.code,
+        HemisphereType.Northern.code,
+        HemisphereType.Southern.code
+    ];
 
-    var kindPill = document.getElementById('pills-kind');
-    generateKindPill(kindPill);
-
-    var monthPill = document.getElementById('pills-month');
-    generateMonthPill(monthPill);
-
-    $('#pills-kind a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target)
-        console.log(target.data('type'));
+    generateNav({
+        id: 'hemisphere',
+        target: target,
+        items: items,
+        controls: items,
+        types: items,
+        texts: months
     });
-
-    $('#pills-month a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target)
-        console.log(target.data('type'));
-    });
-
-    $('#kind-tab-fish').tab('show');
-    $('#month-tab-0').tab('show');
-
-    var config = getDataTableColumnConfig('fish', db);
-    $('#dataTable').DataTable(config);
-    $('#dataTable').DataTable().destroy();
-    $('#dataTable').DataTable(config);
 }
 
-$(document).ready(() => {
+function refreshByTime(month, hour) {
+    utils.refreshStyleByCurrentValue('hemisphereTable', month);
+    utils.refreshStyleByCurrentValue('timeTable', hour);
+}
+
+function refreshByHemisphere(v) {
+    v = parseInt(v);
+    utils.updateHemisphere(v);
+}
+
+function init() {
     $('#currentTime').on('change.datetimepicker', e => {
         let timeDisplay = document.getElementById('timeDisplay');
 
@@ -123,13 +127,14 @@ $(document).ready(() => {
         let t = `${date.format(DefaultDateFormat)}:00`;
         timeDisplay.setAttribute('value', t);
 
-        timeDisplay.dataset.month = date.month() + 1;
+        timeDisplay.dataset.month = date.month();
         timeDisplay.dataset.hour = date.hour();
-        console.log(timeDisplay.dataset);
+        refreshByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
     });
 
     $('#currentTime').datetimepicker({
-        format: DefaultDateFormat,
+        format: 'MM HH',
+        locale: moment.locale('zh-tw'),
         icons: {
             time: 'fas fa-clock',
             date: 'fas fa-calendar',
@@ -150,5 +155,42 @@ $(document).ready(() => {
         }
     });
 
-    main();
+    var kindPill = document.getElementById('pills-kind');
+    generateKindPill(kindPill);
+    $('#pills-kind a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target)
+        console.log(target.data('type'));
+    });
+
+    var monthPill = document.getElementById('pills-month');
+    generateMonthPill(monthPill);
+    $('#pills-month a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target)
+        console.log(target.data('type'));
+    });
+    // monthPill.classList.add('invisible');
+
+    var hemispherePill = document.getElementById('pills-hemisphere');
+    generateHemispherePill(hemispherePill);
+    $('#pills-hemisphere a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target)
+        refreshByHemisphere(target.data('type'));
+    });
+
+    $('#kind-tab-fish').tab('show');
+    $('#month-tab-0').tab('show');
+    $('#hemisphere-tab-3').tab('show');
+
+    var config = getDataTableColumnConfig('fish', 'res/fish.json');
+    var table = $('#dataTable').DataTable(config);
+    table.on('draw', () => {
+        let timeDisplay = document.getElementById('timeDisplay');
+        refreshByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
+    });
+}
+
+$(document).ready(() => {
+    moment.locale('zh-tw');
+
+    init();
 });

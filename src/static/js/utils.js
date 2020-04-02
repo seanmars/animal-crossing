@@ -53,7 +53,7 @@ function renderGrid(targetClass, allItems, availableItems, current) {
         const element = allItems[i];
 
         let span = document.createElement('span');
-        span.dataset['hour'] = i;
+        span.dataset.id = i;
         spans.push(span);
 
         span.className = 'col gridBase justify-content-center align-self-center';
@@ -69,10 +69,6 @@ function renderGrid(targetClass, allItems, availableItems, current) {
             span.classList.add('disable');
         }
 
-        if (current !== undefined && getRandom(1, 3) == current) {
-            span.classList.add('gridCurrent');
-        }
-
         span.textContent = element;
         div.appendChild(span);
     }
@@ -80,11 +76,16 @@ function renderGrid(targetClass, allItems, availableItems, current) {
     return div;
 }
 
-function getDataTableColumnConfig(kind, dataset) {
+function getDataTableColumnConfig(kind, url) {
     switch (kind) {
         case 'fish':
             return {
-                data: dataset,
+                // data: dataset,
+                ajax: {
+                    url: url,
+                    type: 'get',
+                    dataSrc: 'data'
+                },
                 paging: false,
                 columnDefs: [
                     {
@@ -137,13 +138,17 @@ function getDataTableColumnConfig(kind, dataset) {
                         render: function (data, type, row, meta) {
                             let northern = data[HemisphereType.Northern.code];
                             let northernElement = renderGrid('hemisphereTable', AllMonths, northern.month);
+                            northernElement.dataset.hemisphere = HemisphereType.Northern.code;
+
                             let northernTitle = document.createElement('span');
                             northernTitle.className = 'col gridBase gridTitle justify-content-center align-self-center mr-1 text-truncate';
                             northernTitle.textContent = HemisphereType.getName(HemisphereType.Northern.code);
                             northernElement.insertBefore(northernTitle, northernElement.firstChild);
 
                             let southern = data[HemisphereType.Southern.code];
-                            let southernElement = renderGrid('hemisphereTable',AllMonths, southern.month);
+                            let southernElement = renderGrid('hemisphereTable', AllMonths, southern.month);
+                            southernElement.dataset.hemisphere = HemisphereType.Southern.code;
+
                             let southernTitle = document.createElement('span');
                             southernTitle.className = 'col gridBase gridTitle justify-content-center align-self-center mr-1';
                             southernTitle.textContent = HemisphereType.getName(HemisphereType.Southern.code);
@@ -164,3 +169,49 @@ function getDataTableColumnConfig(kind, dataset) {
             break;
     }
 }
+
+const utils = {
+    refreshStyleByCurrentValue: function (className, currentValue) {
+        var rootTables = document.getElementsByClassName(className);
+        if (!rootTables) {
+            console.error(`${className} table is not exists`);
+            return;
+        }
+
+        for (let tIdx = 0; tIdx < rootTables.length; tIdx++) {
+            const root = rootTables[tIdx];
+            let spans = root.getElementsByTagName('span');
+            for (let sIdx = 0; sIdx < spans.length; sIdx++) {
+                const span = spans[sIdx];
+                if (span.dataset.id == currentValue) {
+                    span.classList.add('gridCurrent');
+                } else {
+                    span.classList.remove('gridCurrent');
+                }
+            }
+        }
+    },
+
+    updateHemisphere: function (v) {
+        var rootTables = document.getElementsByClassName('hemisphereTable ');
+        if (!rootTables) {
+            console.error(`${className} table is not exists`);
+            return;
+        }
+
+        for (let tIdx = 0; tIdx < rootTables.length; tIdx++) {
+            const root = rootTables[tIdx];
+            console.log(root.dataset.hemisphere, ' ', v);
+
+            if (v != HemisphereType.Both.code && root.dataset.hemisphere != v) {
+                root.classList.add('d-none');
+                root.classList.add('invisible');
+            } else {
+                root.classList.remove('d-none');
+                root.classList.remove('invisible');
+            }
+        }
+    },
+};
+
+
