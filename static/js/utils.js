@@ -201,7 +201,7 @@ const utils = {
 
         for (let tIdx = 0; tIdx < rootTables.length; tIdx++) {
             const root = rootTables[tIdx];
-            console.log(root.dataset.hemisphere, ' ', v);
+            // console.log(root.dataset.hemisphere, ' ', v);
 
             if (v != HemisphereType.Both.code && root.dataset.hemisphere != v) {
                 root.classList.add('d-none');

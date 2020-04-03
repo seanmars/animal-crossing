@@ -159,14 +159,14 @@ function init() {
     generateKindPill(kindPill);
     $('#pills-kind a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         var target = $(e.target)
-        console.log(target.data('type'));
+        // console.log(target.data('type'));
     });
 
     var monthPill = document.getElementById('pills-month');
     generateMonthPill(monthPill);
     $('#pills-month a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         var target = $(e.target)
-        console.log(target.data('type'));
+        // console.log(target.data('type'));
     });
     // monthPill.classList.add('invisible');
 

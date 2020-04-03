@@ -1,0 +1,22 @@
+.nav-pills .nav-link:not(.active) {
+  background-color: rgba(138, 227, 173, 0.2);
+  color: rgb(68, 177, 189);
+}
+
+.nav-pills .nav-link.active {
+  background-color: rgba(151, 233, 184, 1);
+  color: rgb(23, 99, 107);
+}
+
+.bootstrap-datetimepicker-widget table td span.active {
+  background-color: rgba(151, 233, 184, 1);
+  color: rgb(23, 99, 107);
+}
+
+.table-striped tbody tr:nth-of-type(2n + 1) {
+  background-color: rgba(166, 240, 248, 0.1);
+}
+
+a {
+  color: rgba(151, 233, 184, 1);
+}

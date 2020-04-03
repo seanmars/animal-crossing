@@ -52,9 +52,10 @@ hr {
 }
 
 .gridBase.enable {
-  background-color: bisque;
+  /* background-color: bisque; */
+  background-color:  rgba(151, 233, 184, 1);
 }
 
 .gridBase.disable {
-  background-color: lightgray;
+  background-color: rgba(112, 179, 139, 0.2);
 }
