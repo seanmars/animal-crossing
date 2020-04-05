@@ -72,7 +72,7 @@ const HemisphereType = {
     },
 }
 
-const FilterValid = {
+const FilterMonthValid = {
     None: { code: 0, name: '' },
     All: { code: 1, name: 'all' },
     valid: { code: 2, name: 'valid' },

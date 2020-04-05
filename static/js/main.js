@@ -107,7 +107,7 @@ function generateHemispherePill(target) {
     });
 }
 
-function refreshByTime(month, hour) {
+function updateStyleByTime(month, hour) {
     utils.refreshStyleByCurrentValue('hemisphereTable', month);
     utils.refreshStyleByCurrentValue('timeTable', hour);
 }
@@ -117,24 +117,48 @@ function refreshByHemisphere(v) {
     utils.updateHemisphere(v);
 }
 
-/**
- * @type {DataTables.Api}
- */
+/** @type {DataTables.Api} */
 var tableData;
+/** @type {boolean}} */
+var lockReDraw = false;
 
-function reDrawTable() {
-    if (!tableData) {
+/**
+ *
+ * @param {Object} options
+ * @param {Array<Object>} options.data
+ * @param {number} options.month
+ * @param {number} options.hour
+ * @param {number} options.hemisphere
+ */
+function updateInformation(options) {
+    if (!options.data.length) {
         return;
     }
+
+    // TODO:
+    console.log(options);
+}
+
+function reDrawTable() {
+    if (!tableData || lockReDraw) {
+        return;
+    }
+
     tableData.draw();
+
+    var timeDisplay = document.getElementById('timeDisplay');
+    updateStyleByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
+
+    var hemispheres = document.getElementById('hemispheres');
+    refreshByHemisphere(hemispheres.dataset.type);
 }
 
 function init() {
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            var filterValid = document.getElementById('filterValid');
-            var type = filterValid.dataset['type'];
-            if (type == undefined || type == FilterValid.All.code) {
+            var filterMonthValid = document.getElementById('filterMonthValid');
+            var type = filterMonthValid.dataset.type;
+            if (type == undefined || type == FilterMonthValid.All.code) {
                 return true;
             }
 
@@ -168,17 +192,17 @@ function init() {
     );
 
     $('#currentTime').on('change.datetimepicker', e => {
-        let timeDisplay = document.getElementById('timeDisplay');
+        var timeDisplay = document.getElementById('timeDisplay');
 
         /** @type {moment.Moment} */
-        let date = e.date;
+        var date = e.date;
 
-        let t = `${date.format(DefaultDateFormat)}:00`;
+        var t = `${date.format(DefaultDateFormat)}:00`;
         timeDisplay.setAttribute('value', t);
-
         timeDisplay.dataset.month = date.month();
         timeDisplay.dataset.hour = date.hour();
-        refreshByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
+
+        reDrawTable();
     });
 
     $('#currentTime').datetimepicker({
@@ -227,11 +251,11 @@ function init() {
     $('#pills-hemisphere a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         var target = $(e.target)
         var type = target.data('type');
-        var hemispheres = document.getElementById('hemispheres')
+
+        var hemispheres = document.getElementById('hemispheres');
         if (hemispheres) {
             hemispheres.dataset.type = type;
         }
-        refreshByHemisphere(type);
 
         reDrawTable();
     });
@@ -241,24 +265,35 @@ function init() {
         var target = $(e.target);
         var type = target.data('type');
 
-        var filterValid = document.getElementById('filterValid');
-        filterValid.dataset['type'] = parseInt(type);
+        var filterMonthValid = document.getElementById('filterMonthValid');
+        filterMonthValid.dataset.type = parseInt(type);
 
         reDrawTable();
     });
-
-    $('#kind-tab-fish').tab('show');
-    $('#month-tab-0').tab('show');
-    $('#hemisphere-tab-3').tab('show');
 
     var config = getDataTableColumnConfig('fish', 'res/fish.json');
     tableData = $('#dataTable').DataTable(config);
     tableData.on('draw', () => {
         var timeDisplay = document.getElementById('timeDisplay');
-        refreshByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
+        updateStyleByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
+
+        // update information
+        var hemispheres = document.getElementById('hemispheres');
+        updateInformation({
+            data: tableData.rows().data(),
+            month: timeDisplay.dataset.month,
+            hour: timeDisplay.dataset.hour,
+            hemisphere: hemispheres.dataset.type
+        });
     });
 
+    lockReDraw = true;
+    $('#kind-tab-fish').tab('show');
+    $('#month-tab-0').tab('show');
+    $('#hemisphere-tab-3').tab('show');
     $('#pills-filter-valid-tab').tab('show');
+    lockReDraw = false;
+    reDrawTable();
 }
 
 $(document).ready(() => {
