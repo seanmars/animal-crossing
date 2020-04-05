@@ -71,3 +71,9 @@ const HemisphereType = {
         return this.None.name;
     },
 }
+
+const FilterValid = {
+    None: { code: 0, name: '' },
+    All: { code: 1, name: 'all' },
+    valid: { code: 2, name: 'valid' },
+}

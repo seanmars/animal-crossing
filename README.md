@@ -16,6 +16,10 @@
   - [ ] 消失物種
   - [ ] 出現物種
 - [ ] 目前可以抓到的物種
+  - [x] by 南北半球
+  - [x] by 月份
+  - [ ] by 時間
+- [ ] apply the filter from query string
 - [ ] 大小排序
 
 ## Reference
