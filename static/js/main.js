@@ -126,29 +126,27 @@ let lockReDraw = false;
  *
  * @param {Object} options
  * @param {Array<Object>} options.data
- * @param {number} options.month
- * @param {number} options.hour
- * @param {number} options.hemisphere
+ * @param {string} options.month
+ * @param {string} options.hour
+ * @param {string} options.hemisphere
  */
 function updateInformation(options) {
+    // console.log(options);
     if (!options.data.length) {
         return;
     }
 
     let currentMonth = parseInt(options.month) + 1;
     let nextMonth = currentMonth + 1;
+    let currentHemisphere = parseInt(options.hemisphere);
 
     /** @type {Array<FishData>} */
     let allData = options.data;
-    // console.log(allData);
-
-    // TODO:
-    let rootDiv = document.getElementById('information');
-
     /** @type {Array<FishData>} */
     let northernDataset = [];
     /** @type {Array<FishData>} */
     let southernDataset = [];
+    // TODO: using switch to push to finalDataset;
 
     for (let index = 0; index < allData.length; index++) {
         const data = allData[index];
@@ -167,8 +165,41 @@ function updateInformation(options) {
         }
     }
 
-    console.log(northernDataset, southernDataset);
+    /** @type {Array<FishData>} */
+    let disappearDataset = [];
+    switch (currentHemisphere) {
+        case HemisphereType.Northern.code:
+            disappearDataset = northernDataset;
+            break;
 
+        case HemisphereType.Southern.code:
+            disappearDataset = southernDataset;
+            break;
+
+        default:
+            disappearDataset = northernDataset.concat(southernDataset);
+            break;
+    }
+    disappearDataset = disappearDataset.sort((x, y) => {
+        return y.price - x.price;
+    });
+
+    // TODO: 加入南北資訊
+    let rootDiv = document.getElementById('disappearNextMonth');
+    rootDiv.innerHTML = '';
+    if (disappearDataset.length) {
+        let disappearRoot = document.createElement('ul');
+        disappearRoot.className = 'list-group';
+        disappearDataset.forEach(x => {
+            let disappearItem = document.createElement('li');
+            disappearItem.className = 'list-group-item';
+            let names = x.name.split(',');
+            let price = CurrencyFormatter.format(x.price);
+            disappearItem.textContent = `${names[0]} (${names[1]}) $${price}`;
+            disappearRoot.appendChild(disappearItem);
+        });
+        rootDiv.appendChild(disappearRoot);
+    }
 }
 
 function reDrawTable() {
