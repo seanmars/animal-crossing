@@ -13,15 +13,15 @@ function generateNav(options) {
         return;
     }
 
-    var target = options.target;
-    var prefixId = options.id;
-    var items = options.items;
-    var controls = options.controls;
-    var types = options.types;
-    var texts = options.texts;
+    let target = options.target;
+    let prefixId = options.id;
+    let items = options.items;
+    let controls = options.controls;
+    let types = options.types;
+    let texts = options.texts;
 
     items.forEach((x, idx) => {
-        var a = document.createElement('a');
+        let a = document.createElement('a');
         a.classList.add('nav-link');
         a.setAttribute('id', `${prefixId}-tab-${x}`);
         a.setAttribute('href', '#');
@@ -32,7 +32,7 @@ function generateNav(options) {
         a.dataset.type = types[idx];
         a.text = texts[idx];
 
-        var li = document.createElement('li');
+        let li = document.createElement('li');
         li.appendChild(a);
 
         target.appendChild(li);
@@ -118,9 +118,9 @@ function refreshByHemisphere(v) {
 }
 
 /** @type {DataTables.Api} */
-var tableData;
+let tableData;
 /** @type {boolean}} */
-var lockReDraw = false;
+let lockReDraw = false;
 
 /**
  *
@@ -135,8 +135,40 @@ function updateInformation(options) {
         return;
     }
 
+    let currentMonth = parseInt(options.month) + 1;
+    let nextMonth = currentMonth + 1;
+
+    /** @type {Array<FishData>} */
+    let allData = options.data;
+    // console.log(allData);
+
     // TODO:
-    console.log(options);
+    let rootDiv = document.getElementById('information');
+
+    /** @type {Array<FishData>} */
+    let northernDataset = [];
+    /** @type {Array<FishData>} */
+    let southernDataset = [];
+
+    for (let index = 0; index < allData.length; index++) {
+        const data = allData[index];
+        /** @type {HemisphereData} */
+        let norHemisphere = data.hemisphere[HemisphereType.Northern.code];
+        if (norHemisphere.month.includes(currentMonth) &&
+            !norHemisphere.month.includes(nextMonth)) {
+            northernDataset.push(data);
+        }
+
+        /** @type {HemisphereData} */
+        let souHemisphere = data.hemisphere[HemisphereType.Southern.code];
+        if (souHemisphere.month.includes(currentMonth) &&
+            !souHemisphere.month.includes(nextMonth)) {
+            southernDataset.push(data);
+        }
+    }
+
+    console.log(northernDataset, southernDataset);
+
 }
 
 function reDrawTable() {
@@ -146,41 +178,41 @@ function reDrawTable() {
 
     tableData.draw();
 
-    var timeDisplay = document.getElementById('timeDisplay');
+    let timeDisplay = document.getElementById('timeDisplay');
     updateStyleByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
 
-    var hemispheres = document.getElementById('hemispheres');
+    let hemispheres = document.getElementById('hemispheres');
     refreshByHemisphere(hemispheres.dataset.type);
 }
 
 function init() {
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            var filterMonthValid = document.getElementById('filterMonthValid');
-            var type = filterMonthValid.dataset.type;
+            let filterMonthValid = document.getElementById('filterMonthValid');
+            let type = filterMonthValid.dataset.type;
             if (type == undefined || type == FilterMonthValid.All.code) {
                 return true;
             }
 
-            var row = tableData.row(dataIndex);
-            var data = row.data();
+            let row = tableData.row(dataIndex);
+            let rowData = row.data();
 
-            var timeDisplay = document.getElementById('timeDisplay');
-            var month = parseInt(timeDisplay.dataset.month) + 1;
-            var hemispheres = document.getElementById('hemispheres')
-            var hemisphereType = parseInt(hemispheres.dataset.type);
+            let timeDisplay = document.getElementById('timeDisplay');
+            let month = parseInt(timeDisplay.dataset.month) + 1;
+            let hemispheres = document.getElementById('hemispheres')
+            let hemisphereType = parseInt(hemispheres.dataset.type);
 
             /** @type {Array} */
-            var hemisphere = [];
+            let hemisphere = [];
             switch (hemisphereType) {
                 case HemisphereType.Northern.code:
                 case HemisphereType.Southern.code:
-                    hemisphere = data.hemisphere[hemisphereType].month;
+                    hemisphere = rowData.hemisphere[hemisphereType].month;
                     break;
 
                 case HemisphereType.Both.code:
-                    hemisphere = [].concat(data.hemisphere[HemisphereType.Northern.code].month,
-                        data.hemisphere[HemisphereType.Southern.code].month);
+                    hemisphere = [].concat(rowData.hemisphere[HemisphereType.Northern.code].month,
+                        rowData.hemisphere[HemisphereType.Southern.code].month);
                     break;
 
                 default:
@@ -192,12 +224,12 @@ function init() {
     );
 
     $('#currentTime').on('change.datetimepicker', e => {
-        var timeDisplay = document.getElementById('timeDisplay');
+        let timeDisplay = document.getElementById('timeDisplay');
 
         /** @type {moment.Moment} */
-        var date = e.date;
+        let date = e.date;
 
-        var t = `${date.format(DefaultDateFormat)}:00`;
+        let t = `${date.format(DefaultDateFormat)}:00`;
         timeDisplay.setAttribute('value', t);
         timeDisplay.dataset.month = date.month();
         timeDisplay.dataset.hour = date.hour();
@@ -229,30 +261,30 @@ function init() {
     });
 
     // kind
-    var kindPill = document.getElementById('pills-kind');
+    let kindPill = document.getElementById('pills-kind');
     generateKindPill(kindPill);
     $('#pills-kind a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target)
+        let target = $(e.target)
         // console.log(target.data('type'));
     });
 
 
     // month
-    var monthPill = document.getElementById('pills-month');
+    let monthPill = document.getElementById('pills-month');
     generateMonthPill(monthPill);
     $('#pills-month a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target)
+        let target = $(e.target)
         // console.log(target.data('type'));
     });
 
     // hemisphere
-    var hemispherePill = document.getElementById('pills-hemisphere');
+    let hemispherePill = document.getElementById('pills-hemisphere');
     generateHemispherePill(hemispherePill);
     $('#pills-hemisphere a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target)
-        var type = target.data('type');
+        let target = $(e.target)
+        let type = target.data('type');
 
-        var hemispheres = document.getElementById('hemispheres');
+        let hemispheres = document.getElementById('hemispheres');
         if (hemispheres) {
             hemispheres.dataset.type = type;
         }
@@ -262,23 +294,23 @@ function init() {
 
     // filter
     $('#pills-filter a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target);
-        var type = target.data('type');
+        let target = $(e.target);
+        let type = target.data('type');
 
-        var filterMonthValid = document.getElementById('filterMonthValid');
+        let filterMonthValid = document.getElementById('filterMonthValid');
         filterMonthValid.dataset.type = parseInt(type);
 
         reDrawTable();
     });
 
-    var config = getDataTableColumnConfig('fish', 'res/fish.json');
+    let config = getDataTableColumnConfig('fish', 'res/fish.json');
     tableData = $('#dataTable').DataTable(config);
     tableData.on('draw', () => {
-        var timeDisplay = document.getElementById('timeDisplay');
+        let timeDisplay = document.getElementById('timeDisplay');
         updateStyleByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
 
         // update information
-        var hemispheres = document.getElementById('hemispheres');
+        let hemispheres = document.getElementById('hemispheres');
         updateInformation({
             data: tableData.rows().data(),
             month: timeDisplay.dataset.month,

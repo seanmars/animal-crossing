@@ -1,3 +1,24 @@
+/** @typedef {Object} HemisphereData
+ * @property {Array<number>} month
+ */
+
+/** @typedef {Object} HemisphereSet
+ * @property {HemisphereData} 1
+ * @property {HemisphereData} 2
+ */
+
+/**
+ * The Fish Data
+ * @typedef {Object} FishData
+ * @property {HemisphereSet} hemisphere
+ * @property {number} location
+ * @property {string} name
+ * @property {number} price
+ * @property {number} shadowSize
+ * @property {Array<number>} time
+ */
+
+
 const Locations = {
     None: { code: 0, name: '無' },
     Sea: { code: 1, name: "海洋" },
