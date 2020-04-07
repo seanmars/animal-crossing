@@ -12,15 +12,16 @@
   - [x] 時間
   - [x] 更新現在時間
 - [x] color sytle
-- [ ] 下個月份物種通知
-  - [ ] 消失物種
-  - [ ] 出現物種
-- [ ] 目前可以抓到的物種
-  - [x] by 南北半球
-  - [x] by 月份
-  - [ ] by 時間
+- [x] 下個月份物種通知
+  - [x] 消失物種
+  - [x] 出現物種
+- [ ] filter
+  - [x] 南北半球
+  - [x] 月份
+  - [ ] 時間
+  - [ ] 地點
 - [ ] apply the filter from query string
-- [ ] 大小排序
+- [ ] picture
 
 ## Reference
 

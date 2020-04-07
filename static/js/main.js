@@ -131,6 +131,29 @@ let lockReDraw = false;
  * @param {string} options.hemisphere
  */
 function updateInformation(options) {
+    /**
+     * @param {HTMLElement} target
+     * @param {Array<FishData>} items
+     */
+    function appendTo(target, title, items) {
+        let div = document.createElement('div');
+        div.textContent = title;
+        target.appendChild(div);
+        div = document.createElement('div');
+        target.appendChild(div);
+        if (items.length) {
+            items.forEach(x => {
+                let names = x.name.split(',');
+                let text = `${names[0]} (${names[1]})`;
+                let ele = document.createElement('button');
+                ele.type = 'button';
+                ele.className = 'btn btn-link';
+                ele.textContent = text;
+                target.appendChild(ele);
+            });
+        }
+    }
+
     // console.log(options);
     if (!options.data.length) {
         return;
@@ -141,64 +164,75 @@ function updateInformation(options) {
     let currentHemisphere = parseInt(options.hemisphere);
 
     /** @type {Array<FishData>} */
-    let allData = options.data;
-    /** @type {Array<FishData>} */
-    let northernDataset = [];
-    /** @type {Array<FishData>} */
-    let southernDataset = [];
-    // TODO: using switch to push to finalDataset;
 
+    /** @type {Array<FishData>} */
+    let northernDisappear = [];
+    /** @type {Array<FishData>} */
+    let southernDisappear = [];
+
+    /** @type {Array<FishData>} */
+    let northernAppear = [];
+    /** @type {Array<FishData>} */
+    let southernAppear = [];
+
+    let allData = options.data;
     for (let index = 0; index < allData.length; index++) {
         const data = allData[index];
+
         /** @type {HemisphereData} */
         let norHemisphere = data.hemisphere[HemisphereType.Northern.code];
-        if (norHemisphere.month.includes(currentMonth) &&
-            !norHemisphere.month.includes(nextMonth)) {
-            northernDataset.push(data);
-        }
-
         /** @type {HemisphereData} */
         let souHemisphere = data.hemisphere[HemisphereType.Southern.code];
+
+        // disappear
+        if (norHemisphere.month.includes(currentMonth) &&
+            !norHemisphere.month.includes(nextMonth)) {
+            northernDisappear.push(data);
+        }
         if (souHemisphere.month.includes(currentMonth) &&
             !souHemisphere.month.includes(nextMonth)) {
-            southernDataset.push(data);
+            southernDisappear.push(data);
+        }
+
+        // appear
+        if (!norHemisphere.month.includes(currentMonth) &&
+            norHemisphere.month.includes(nextMonth)) {
+            northernAppear.push(data);
+        }
+        if (!souHemisphere.month.includes(currentMonth) &&
+            souHemisphere.month.includes(nextMonth)) {
+            southernAppear.push(data);
         }
     }
 
-    /** @type {Array<FishData>} */
-    let disappearDataset = [];
-    switch (currentHemisphere) {
-        case HemisphereType.Northern.code:
-            disappearDataset = northernDataset;
-            break;
-
-        case HemisphereType.Southern.code:
-            disappearDataset = southernDataset;
-            break;
-
-        default:
-            disappearDataset = northernDataset.concat(southernDataset);
-            break;
-    }
-    disappearDataset = disappearDataset.sort((x, y) => {
+    northernDisappear = northernDisappear.sort((x, y) => {
+        return y.price - x.price;
+    });
+    southernDisappear = southernDisappear.sort((x, y) => {
+        return y.price - x.price;
+    });
+    northernAppear = northernAppear.sort((x, y) => {
+        return y.price - x.price;
+    });
+    southernAppear = southernAppear.sort((x, y) => {
         return y.price - x.price;
     });
 
-    // TODO: 加入南北資訊
-    let rootDiv = document.getElementById('disappearNextMonth');
-    rootDiv.innerHTML = '';
-    if (disappearDataset.length) {
-        let disappearRoot = document.createElement('ul');
-        disappearRoot.className = 'list-group';
-        disappearDataset.forEach(x => {
-            let disappearItem = document.createElement('li');
-            disappearItem.className = 'list-group-item';
-            let names = x.name.split(',');
-            let price = CurrencyFormatter.format(x.price);
-            disappearItem.textContent = `${names[0]} (${names[1]}) $${price}`;
-            disappearRoot.appendChild(disappearItem);
-        });
-        rootDiv.appendChild(disappearRoot);
+    let nextDisappear = document.getElementById('nextDisappear');
+    nextDisappear.innerHTML = '';
+    let nextAppear = document.getElementById('nextAppear');
+    nextAppear.innerHTML = '';
+
+    if (currentHemisphere == HemisphereType.Both.code ||
+        currentHemisphere == HemisphereType.Northern.code) {
+        appendTo(nextDisappear, HemisphereType.Northern.fullName, northernDisappear);
+        appendTo(nextAppear, HemisphereType.Northern.fullName, northernAppear);
+    }
+
+    if (currentHemisphere == HemisphereType.Both.code ||
+        currentHemisphere == HemisphereType.Southern.code) {
+        appendTo(nextDisappear, HemisphereType.Southern.fullName, southernDisappear);
+        appendTo(nextAppear, HemisphereType.Southern.fullName, southernAppear);
     }
 }
 

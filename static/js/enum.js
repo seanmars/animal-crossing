@@ -74,8 +74,8 @@ const ShadowSize = {
 
 const HemisphereType = {
     None: { code: 0, name: '無' },
-    Northern: { code: 1, name: '北' },
-    Southern: { code: 2, name: '南' },
+    Northern: { code: 1, name: '北', fullName: '北半球' },
+    Southern: { code: 2, name: '南', fullName: '南半球' },
     Both: { code: 3, name: 'Both' },
 
     getName: function (code) {

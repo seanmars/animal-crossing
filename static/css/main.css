@@ -5,6 +5,14 @@ hr {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.top-block {
+  height: auto;
+}
+
+.top-right {
+  font-size: 1rem;
+}
+
 .dt-center,
 .dt-head-center,
 .dt-body-center {
@@ -53,7 +61,7 @@ hr {
 
 .gridBase.enable {
   /* background-color: bisque; */
-  background-color:  rgba(151, 233, 184, 1);
+  background-color: rgba(151, 233, 184, 1);
 }
 
 .gridBase.disable {
