@@ -22,9 +22,12 @@
   - [ ] 地點
 - [ ] apply the filter from query string
 - [ ] picture
+- [ ] 製作一份表格
 
 ## Reference
 
+- https://www.doumori.com/
+- http://diobulanduo.gitee.io/animalcrossing.github.io/
 - https://animalcrossing.fandom.com/wiki/Fish_(New_Horizons)#Northern%20Hemisphere
 - https://animalcrossing.fandom.com/wiki/List_of_fish_by_shadow_size
 - https://docs.google.com/spreadsheets/d/1DEOtx-AuYvwDx98BFtdeCW936Y2HcggtntoFwknkSdI/htmlview#
