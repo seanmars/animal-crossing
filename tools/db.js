@@ -3938,3 +3938,5 @@ function createDb() {
         }
     ];
 }
+
+module.exports = createDb;
