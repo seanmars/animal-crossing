@@ -89,10 +89,9 @@ function generateMonthPill(target) {
  */
 function generateHemispherePill(target) {
     const months = [
-        HemisphereType.Both.name, '北半球', '南半球'
+        '北半球', '南半球'
     ];
     const items = [
-        HemisphereType.Both.code,
         HemisphereType.Northern.code,
         HemisphereType.Southern.code
     ];
@@ -160,7 +159,14 @@ function updateInformation(options) {
     }
 
     let currentMonth = parseInt(options.month) + 1;
+    if (currentMonth > 12) {
+        currentMonth = 1;
+    }
     let nextMonth = currentMonth + 1;
+    if (nextMonth > 12) {
+        nextMonth = 1;
+    }
+
     let currentHemisphere = parseInt(options.hemisphere);
 
     /** @type {Array<FishData>} */
@@ -387,7 +393,7 @@ function init() {
     lockReDraw = true;
     $('#kind-tab-fish').tab('show');
     $('#month-tab-0').tab('show');
-    $('#hemisphere-tab-3').tab('show');
+    $('#hemisphere-tab-1').tab('show');
     $('#pills-filter-valid-tab').tab('show');
     lockReDraw = false;
     reDrawTable();
