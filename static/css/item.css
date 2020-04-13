@@ -1,0 +1,32 @@
+.item-body {
+  width: 18% !important;
+  height: 150px !important;
+  border-radius: 0.3rem;
+  border-style: solid;
+  border-color: chocolate;
+  border-width: 1px;
+  text-align: center !important;
+  vertical-align: middle !important;
+  margin: 0.15rem;
+}
+
+.item-title {
+  display: block;
+  text-align: center !important;
+  margin-bottom: 0.4rem;
+}
+
+img.item-icon {
+  text-align: center !important;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 60px;
+  height: 60px;
+}
+
+.item-text {
+  display: block;
+  text-align: left !important;
+  margin: 0.3rem;
+}
