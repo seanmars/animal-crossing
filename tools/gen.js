@@ -1,7 +1,5 @@
-
 const fs = require('fs');
 const ExcelJS = require('exceljs');
-const db = require('./db.js');
 
 const FishColumnIndex = {
     id: 1,
@@ -17,6 +15,21 @@ const FishColumnIndex = {
     icon: 43
 };
 
+/**
+ * @typedef {Object} FishRecord
+ * @property {String} icon
+ * @property {Number} id
+ * @property {Number} location
+ * @property {Object} months
+ * @property {String} name
+ * @property {Number} price
+ * @property {Number} shadowSize
+ * @property {Array} times
+ */
+
+/**
+ * @returns {Array<FishRecord>}
+ */
 async function readData() {
     let loader = new ExcelJS.Workbook();
     let wb = await loader.xlsx.readFile('res/data.xlsx');
@@ -27,83 +40,74 @@ async function readData() {
 
     let dataset = [];
     ws.eachRow((row, rowNumber) => {
-        let id = row.getCell('id');
-        if (rowNumber == 1 || id.value == null || rowNumber > 3) {
+        let idCell = row.getCell('id');
+        let id = idCell.value;
+        if (rowNumber <= 2 || id == null) {
             return;
         }
-        console.log(`Row ${rowNumber}`);
 
-        let name = row.getCell(FishColumnIndex.name);
-        let price = row.getCell(FishColumnIndex.price);
-        let location = row.getCell(FishColumnIndex.location);
-        let shadowSize = row.getCell(FishColumnIndex.shadowSize);
+        let name = row.getCell(FishColumnIndex.name).value;
+        let engName = row.getCell(FishColumnIndex.nameEng).value;
+        let price = row.getCell(FishColumnIndex.price).value;
+        let location = row.getCell(FishColumnIndex.location).value;
+        let shadowSize = row.getCell(FishColumnIndex.shadowSize).value;
+
         let times = [];
+        let t = 0;
         for (let i = FishColumnIndex.timeBegin; i <= FishColumnIndex.timeEnd; i++) {
             let cell = row.getCell(i);
             let v = cell.value;
-            times.push(!v ? 0 : 1);
+            if (v) {
+                times.push(t);
+            }
+
+            t++
         }
-        let months = [];
+
+        let hemisphere = {
+            '1': { 'month': [] },
+            '2': { 'month': [] },
+        };
+        let southernRow = ws.getRow(rowNumber + 1);
+        let month = 1;
         for (let i = FishColumnIndex.monthBegin; i <= FishColumnIndex.monthEnd; i++) {
-            let cell = row.getCell(i);
-            let v = cell.value;
-            months.push(!v ? 0 : 1);
+            let northernCell = row.getCell(i);
+            let northernValue = northernCell.value;
+            let southernCell = southernRow.getCell(i);
+            let southernValue = southernCell.value;
+
+            if (northernValue) {
+                hemisphere['1'].month.push(month);
+            }
+
+            if (southernValue) {
+                hemisphere['2'].month.push(month);
+            }
+
+            month++
         }
 
         dataset.push({
-            name: name.value,
-            price: !price.value ? 0 : price.value,
-            location: !location.value ? 0 : location.value,
-            shadowSize: !shadowSize.value ? 0 : shadowSize.value,
-            times: times,
-            months: months
+            id: id,
+            name: name,
+            engName: engName,
+            price: !price ? 0 : price,
+            location: !location ? 0 : location,
+            shadowSize: !shadowSize ? 0 : shadowSize,
+            time: times,
+            hemisphere: hemisphere,
+            icon: `${idCell}.webp`
         });
     });
 
-    console.log(dataset);
+    // console.dir(dataset, { depth: null });
     return dataset;
 }
 
-async function dataToTSV() {
-    let data = db();
-    let result = [];
-    data.forEach((x, idx) => {
-        let n = x.name.split(',');
-        let id = idx + 1;
-        let content = '';
-        content = `${id}\t${n[0]}\t${n[1]}\t${x.price}\t${x.location}\t${x.shadowSize}\t`;
-
-        let tFlag = [];
-        for (let k = 0; k <= 23; k++) {
-            tFlag.push(x.time.includes(k) ? 1 : 0);
-        }
-        content += tFlag.join('\t');
-        content += '\t';
-
-        let mFlag = [];
-        for (let k = 0; k < 12; k++) {
-            mFlag.push(x.hemisphere[1].month.includes(k) ? 1 : 0);
-        }
-        content += mFlag.join('\t');
-        result.push(content);
-
-        content = '\t'.repeat(6);
-        content += '\t'.repeat(23);
-        content += '\t';
-        mFlag = [];
-        for (let k = 1; k <= 12; k++) {
-            mFlag.push(x.hemisphere[2].month.includes(k) ? 1 : 0);
-        }
-        content += mFlag.join('\t');
-        result.push(content);
-    });
-
-    console.log(result);
-    await fs.writeFileSync('tmp.text', result.join('\n'));
-    return result;
-}
-
 (async () => {
-    // let dataset = await readData();
-    await dataToTSV();
+    let dataset = await readData();
+    // write the data to json file
+    let output = JSON.stringify({ data: dataset });
+    let path = '../res/fish.json';
+    await fs.writeFileSync(path, output);
 })();

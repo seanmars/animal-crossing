@@ -99,8 +99,7 @@ function getDataTableColumnConfig(kind, url) {
                         title: '名稱',
                         className: 'dt-body-left',
                         render: function (data, type, row, meta) {
-                            var name = data.split(',');
-                            return '<pre>' + name[0] + '</pre>' + name[1];
+                            return '<pre>' + row.name + '</pre>' + row.engName;
                         }
                     },
                     {
@@ -136,6 +135,8 @@ function getDataTableColumnConfig(kind, url) {
                         data: "hemisphere",
                         title: "月份",
                         render: function (data, type, row, meta) {
+                            console.log(data);
+
                             let northern = data[HemisphereType.Northern.code];
                             let northernElement = renderGrid('hemisphereTable', AllMonths, northern.month);
                             northernElement.dataset.hemisphere = HemisphereType.Northern.code;

@@ -135,15 +135,16 @@ function updateInformation(options) {
      * @param {Array<FishData>} items
      */
     function appendTo(target, title, items) {
+        // disable title
+        // let div = document.createElement('div');
+        // div.textContent = title;
+        // target.appendChild(div);
+
         let div = document.createElement('div');
-        div.textContent = title;
-        target.appendChild(div);
-        div = document.createElement('div');
         target.appendChild(div);
         if (items.length) {
             items.forEach(x => {
-                let names = x.name.split(',');
-                let text = `${names[0]} (${names[1]})`;
+                let text = `${x.name} (${x.engName})`;
                 let ele = document.createElement('button');
                 ele.type = 'button';
                 ele.className = 'btn btn-link';

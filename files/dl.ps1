@@ -1,4 +1,4 @@
-$links = Get-Content -Path "./fish-icon.txt"
+$links = Get-Content -Path "./input.txt"
 $outputPath = "./icons"
 
 Foreach ($link in $links) {
