@@ -10,14 +10,16 @@
 /**
  * The Fish Data
  * @typedef {Object} FishData
- * @property {HemisphereSet} hemisphere
- * @property {number} location
+ * @property {number} id
  * @property {string} name
+ * @property {string} engName
+ * @property {string} icon
  * @property {number} price
+ * @property {number} location
  * @property {number} shadowSize
  * @property {Array<number>} time
+ * @property {HemisphereSet} hemisphere
  */
-
 
 const Locations = {
     None: { code: 0, name: '無' },
