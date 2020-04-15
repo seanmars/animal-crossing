@@ -48,10 +48,16 @@ const utils = {
     generateItem: function (data) {
         if ('content' in document.createElement('template')) {
             let t = document.querySelector('template#gridItem');
-            let title = t.content.querySelector('span#title');
+            /** @type {Element} */
+            let root = t.content;
+
+            let title = root.querySelector('span#title');
             title.textContent = `${data.name} (${data.engName})`
 
-            let clone = document.importNode(t.content, true);
+            let icon = root.querySelector('img#icon');
+            icon.setAttribute('src', `res/fish/${data.icon}`);
+
+            let clone = document.importNode(root, true);
             return clone;
         }
         else {
