@@ -203,14 +203,14 @@ $(document).ready(async () => {
     try {
         init();
 
-        const response = await axios.get('res/fish.json');
+        const response = await axios.get('./res/fish.json');
+        /** @type {Array<FishData>} */
         const dataset = response.data.data;
-        console.log(dataset);
-        let item = utils.generateItem(dataset[0]);
-        console.log(item);
-
         let itemRoot = document.getElementById('itemRoot');
-        itemRoot.appendChild(item);
+        dataset.forEach(data => {
+            let item = utils.generateItem(data);
+            itemRoot.appendChild(item);
+        });
 
         lockReDraw = true;
         $('#kind-tab-fish').tab('show');

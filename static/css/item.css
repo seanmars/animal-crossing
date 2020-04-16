@@ -1,6 +1,6 @@
 .item-body {
   width: 18% !important;
-  height: 150px !important;
+  height: 200px !important;
   border-radius: 0.3rem;
   border-style: solid;
   border-color: chocolate;
@@ -29,4 +29,5 @@ img.item-icon {
   display: block;
   text-align: left !important;
   margin: 0.3rem;
+  padding-left: 1rem;
 }

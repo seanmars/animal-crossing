@@ -24,8 +24,8 @@
 const Locations = {
     None: { code: 0, name: '無' },
     Sea: { code: 1, name: "海洋" },
-    River: { code: 2, name: "河" },
-    RiverClifftop: { code: 3, name: "河(崖頂)" },
+    River: { code: 2, name: "河川" },
+    RiverClifftop: { code: 3, name: "河川(崖頂)" },
     RiverPondClifftop: { code: 4, name: "池塘(崖頂)" },
     RiverMouth: { code: 5, name: "河口" },
     Pond: { code: 6, name: "池塘" },
