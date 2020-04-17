@@ -44,15 +44,14 @@ function* range(start, end, max) {
 const utils = {
     /**
      * @param {FishData} data
+     * @returns {HTMLDivElement}
      */
     generateCardItem: function (data) {
         if ('content' in document.createElement('template')) {
-            let t = document.querySelector('template#cardItem');
-            let root = t.content;
+            let t = document.querySelector('template#itemCardTemplate');
+            let root = t.content.querySelector('#itemCard');
             /** @type {Element} */
             let clone = document.importNode(root, true);
-            /** @type {HTMLSpanElement} */
-            let p;
 
             // title
             let title = clone.querySelector('#title');

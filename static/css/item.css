@@ -32,11 +32,17 @@ img.item-icon {
   padding-left: 1rem;
 }
 
-#itemData div.card-body {
+#itemCard div.card-body {
   padding: 0.3rem !important;
 }
 
+#itemCard.selected,
+#itemCard.selected .list-group-item {
+  background-color: rgba(151, 233, 184, 1);
+}
+
 .item-card {
+  cursor: pointer;
   width: 18%;
   margin: 0.25rem;
 }

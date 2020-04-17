@@ -193,8 +193,11 @@ function init() {
 
         reDrawTable();
     });
+}
 
-
+function clearAllSelectedCard() {
+    let itemCards = document.getElementsByName('itemCard');
+    itemCards.forEach(x => x.classList.remove('selected'));
 }
 
 $(document).ready(async () => {
@@ -206,10 +209,15 @@ $(document).ready(async () => {
         const response = await axios.get('res/fish.json');
         /** @type {Array<FishData>} */
         const dataset = response.data.data;
-        let itemRoot = document.getElementById('itemRoot');
+        let container = document.getElementById('cardContainer');
         dataset.forEach(data => {
             let item = utils.generateCardItem(data);
-            itemRoot.appendChild(item);
+            item.addEventListener('click', (e) => {
+                clearAllSelectedCard();
+                let card = $(e.target).closest('#itemCard').first();
+                if (card) { card.addClass('selected'); }
+            });
+            container.appendChild(item);
         });
 
         lockReDraw = true;
