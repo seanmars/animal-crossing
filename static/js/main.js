@@ -106,195 +106,14 @@ function generateHemispherePill(target) {
     });
 }
 
-function updateStyleByTime(month, hour) {
-    utils.refreshStyleByCurrentValue('hemisphereTable', month);
-    utils.refreshStyleByCurrentValue('timeTable', hour);
-}
-
-function refreshByHemisphere(v) {
-    v = parseInt(v);
-    utils.updateHemisphere(v);
-}
-
-/** @type {DataTables.Api} */
-let tableData;
 /** @type {boolean}} */
 let lockReDraw = false;
 
-/**
- *
- * @param {Object} options
- * @param {Array<Object>} options.data
- * @param {string} options.month
- * @param {string} options.hour
- * @param {string} options.hemisphere
- */
-function updateInformation(options) {
-    /**
-     * @param {HTMLElement} target
-     * @param {Array<FishData>} items
-     */
-    function appendTo(target, title, items) {
-        // disable title
-        // let div = document.createElement('div');
-        // div.textContent = title;
-        // target.appendChild(div);
-
-        let div = document.createElement('div');
-        target.appendChild(div);
-        if (items.length) {
-            items.forEach(x => {
-                let text = `${x.name} (${x.engName})`;
-                let ele = document.createElement('button');
-                ele.type = 'button';
-                ele.className = 'btn btn-link';
-                ele.textContent = text;
-                target.appendChild(ele);
-            });
-        }
-    }
-
-    // console.log(options);
-    if (!options.data.length) {
-        return;
-    }
-
-    let currentMonth = parseInt(options.month) + 1;
-    if (currentMonth > 12) {
-        currentMonth = 1;
-    }
-    let nextMonth = currentMonth + 1;
-    if (nextMonth > 12) {
-        nextMonth = 1;
-    }
-
-    let currentHemisphere = parseInt(options.hemisphere);
-
-    /** @type {Array<FishData>} */
-
-    /** @type {Array<FishData>} */
-    let northernDisappear = [];
-    /** @type {Array<FishData>} */
-    let southernDisappear = [];
-
-    /** @type {Array<FishData>} */
-    let northernAppear = [];
-    /** @type {Array<FishData>} */
-    let southernAppear = [];
-
-    let allData = options.data;
-    for (let index = 0; index < allData.length; index++) {
-        const data = allData[index];
-
-        /** @type {HemisphereData} */
-        let norHemisphere = data.hemisphere[HemisphereType.Northern.code];
-        /** @type {HemisphereData} */
-        let souHemisphere = data.hemisphere[HemisphereType.Southern.code];
-
-        // disappear
-        if (norHemisphere.month.includes(currentMonth) &&
-            !norHemisphere.month.includes(nextMonth)) {
-            northernDisappear.push(data);
-        }
-        if (souHemisphere.month.includes(currentMonth) &&
-            !souHemisphere.month.includes(nextMonth)) {
-            southernDisappear.push(data);
-        }
-
-        // appear
-        if (!norHemisphere.month.includes(currentMonth) &&
-            norHemisphere.month.includes(nextMonth)) {
-            northernAppear.push(data);
-        }
-        if (!souHemisphere.month.includes(currentMonth) &&
-            souHemisphere.month.includes(nextMonth)) {
-            southernAppear.push(data);
-        }
-    }
-
-    northernDisappear = northernDisappear.sort((x, y) => {
-        return y.price - x.price;
-    });
-    southernDisappear = southernDisappear.sort((x, y) => {
-        return y.price - x.price;
-    });
-    northernAppear = northernAppear.sort((x, y) => {
-        return y.price - x.price;
-    });
-    southernAppear = southernAppear.sort((x, y) => {
-        return y.price - x.price;
-    });
-
-    let nextDisappear = document.getElementById('nextDisappear');
-    nextDisappear.innerHTML = '';
-    let nextAppear = document.getElementById('nextAppear');
-    nextAppear.innerHTML = '';
-
-    if (currentHemisphere == HemisphereType.Both.code ||
-        currentHemisphere == HemisphereType.Northern.code) {
-        appendTo(nextDisappear, HemisphereType.Northern.fullName, northernDisappear);
-        appendTo(nextAppear, HemisphereType.Northern.fullName, northernAppear);
-    }
-
-    if (currentHemisphere == HemisphereType.Both.code ||
-        currentHemisphere == HemisphereType.Southern.code) {
-        appendTo(nextDisappear, HemisphereType.Southern.fullName, southernDisappear);
-        appendTo(nextAppear, HemisphereType.Southern.fullName, southernAppear);
-    }
-}
-
 function reDrawTable() {
-    if (!tableData || lockReDraw) {
-        return;
-    }
 
-    tableData.draw();
-
-    let timeDisplay = document.getElementById('timeDisplay');
-    updateStyleByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
-
-    let hemispheres = document.getElementById('hemispheres');
-    refreshByHemisphere(hemispheres.dataset.type);
 }
 
 function init() {
-    $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            let filterMonthValid = document.getElementById('filterMonthValid');
-            let type = filterMonthValid.dataset.type;
-            if (type == undefined || type == FilterMonthValid.All.code) {
-                return true;
-            }
-
-            let row = tableData.row(dataIndex);
-            let rowData = row.data();
-
-            let timeDisplay = document.getElementById('timeDisplay');
-            let month = parseInt(timeDisplay.dataset.month) + 1;
-            let hemispheres = document.getElementById('hemispheres')
-            let hemisphereType = parseInt(hemispheres.dataset.type);
-
-            /** @type {Array} */
-            let hemisphere = [];
-            switch (hemisphereType) {
-                case HemisphereType.Northern.code:
-                case HemisphereType.Southern.code:
-                    hemisphere = rowData.hemisphere[hemisphereType].month;
-                    break;
-
-                case HemisphereType.Both.code:
-                    hemisphere = [].concat(rowData.hemisphere[HemisphereType.Northern.code].month,
-                        rowData.hemisphere[HemisphereType.Southern.code].month);
-                    break;
-
-                default:
-                    return false;
-            }
-
-            return hemisphere.includes(month);
-        }
-    );
-
     $('#currentTime').on('change.datetimepicker', e => {
         let timeDisplay = document.getElementById('timeDisplay');
 
@@ -375,33 +194,32 @@ function init() {
         reDrawTable();
     });
 
-    let config = getDataTableColumnConfig('fish', 'res/fish.json');
-    tableData = $('#dataTable').DataTable(config);
-    tableData.on('draw', () => {
-        let timeDisplay = document.getElementById('timeDisplay');
-        updateStyleByTime(timeDisplay.dataset.month, timeDisplay.dataset.hour);
 
-        // update information
-        let hemispheres = document.getElementById('hemispheres');
-        updateInformation({
-            data: tableData.rows().data(),
-            month: timeDisplay.dataset.month,
-            hour: timeDisplay.dataset.hour,
-            hemisphere: hemispheres.dataset.type
-        });
-    });
-
-    lockReDraw = true;
-    $('#kind-tab-fish').tab('show');
-    $('#month-tab-0').tab('show');
-    $('#hemisphere-tab-1').tab('show');
-    $('#pills-filter-valid-tab').tab('show');
-    lockReDraw = false;
-    reDrawTable();
 }
 
-$(document).ready(() => {
+$(document).ready(async () => {
     moment.locale('zh-tw');
 
-    init();
+    try {
+        init();
+
+        const response = await axios.get('./res/fish.json');
+        /** @type {Array<FishData>} */
+        const dataset = response.data.data;
+        let itemRoot = document.getElementById('itemRoot');
+        dataset.forEach(data => {
+            let item = utils.generateCardItem(data);
+            itemRoot.appendChild(item);
+        });
+
+        lockReDraw = true;
+        $('#kind-tab-fish').tab('show');
+        $('#month-tab-0').tab('show');
+        $('#hemisphere-tab-1').tab('show');
+        $('#pills-filter-valid-tab').tab('show');
+        lockReDraw = false;
+        reDrawTable();
+    } catch (error) {
+        console.error(error);
+    }
 });

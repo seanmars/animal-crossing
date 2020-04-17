@@ -31,188 +31,126 @@ function* range(start, end, max) {
 
     yield* range(start + 1, end, max);
 }
-
 /**
- *
- * @param {Array<number>} allItems
- * @param {Array<number>} availableItems
- * @param {number} current
+ * <div class="item-body">
+                        <span class="item-title h5">title</span>
+                        <img class="item-icon" src="files/fish/龍睛金魚.webp">
+                        <span class="item-text">
+                            <span>info:</span>
+                            <span>content</span>
+                        </span>
+                    </div>
  */
-function renderGrid(targetClass, allItems, availableItems, current) {
-    if (!Array.isArray(allItems) || !Array.isArray(availableItems)) {
-        console.error('Invalid input.', allItems, availableItems);
-        return;
-    }
-
-    var div = document.createElement('div');
-    div.className = `${targetClass} gridTable row justify-content-center align-self-center pl-4 pr-4`;
-
-    var spans = [];
-    var len = allItems.length - 1;
-    for (let i = 0; i <= len; i++) {
-        const element = allItems[i];
-
-        let span = document.createElement('span');
-        span.dataset.id = i;
-        spans.push(span);
-
-        span.className = 'col gridBase justify-content-center align-self-center';
-        if (i === 0) {
-            span.classList.add('gridBegin');
-        } else if (i === len) {
-            span.classList.add('gridEnd');
-        }
-
-        if (availableItems.includes(element)) {
-            span.classList.add('enable');
-        } else {
-            span.classList.add('disable');
-        }
-
-        span.textContent = element;
-        div.appendChild(span);
-    }
-
-    return div;
-}
-
-function getDataTableColumnConfig(kind, url) {
-    switch (kind) {
-        case 'fish':
-            return {
-                // data: dataset,
-                ajax: {
-                    url: url,
-                    type: 'get',
-                    dataSrc: 'data'
-                },
-                paging: false,
-                columnDefs: [
-                    {
-                        targets: '_all',
-                        className: 'dt-center align-middle'
-                    }
-                ],
-                columns: [
-                    {
-                        data: "name",
-                        title: '名稱',
-                        className: 'dt-body-left',
-                        render: function (data, type, row, meta) {
-                            return '<pre>' + row.name + '</pre>' + row.engName;
-                        }
-                    },
-                    {
-                        data: "price",
-                        title: "價錢",
-                        render: function (data, type, row, meta) {
-                            return CurrencyFormatter.format(data);
-                        }
-                    },
-                    {
-                        data: "time",
-                        title: "時間",
-                        render: function (data, type, row, meta) {
-                            let ele = renderGrid('timeTable', AllHours, data);
-                            return ele ? ele.outerHTML : '';
-                        }
-                    },
-                    {
-                        data: "shadowSize",
-                        title: "影子",
-                        render: function (data, type, row, meta) {
-                            return ShadowSize.getName(data);
-                        }
-                    },
-                    {
-                        data: "location",
-                        title: "地點",
-                        render: function (data, type, row, meta) {
-                            return Locations.getName(data);
-                        }
-                    },
-                    {
-                        data: "hemisphere",
-                        title: "月份",
-                        render: function (data, type, row, meta) {
-                            console.log(data);
-
-                            let northern = data[HemisphereType.Northern.code];
-                            let northernElement = renderGrid('hemisphereTable', AllMonths, northern.month);
-                            northernElement.dataset.hemisphere = HemisphereType.Northern.code;
-
-                            let northernTitle = document.createElement('span');
-                            northernTitle.className = 'col gridBase gridTitle justify-content-center align-self-center mr-1 text-truncate';
-                            northernTitle.textContent = HemisphereType.getName(HemisphereType.Northern.code);
-                            northernElement.insertBefore(northernTitle, northernElement.firstChild);
-
-                            let southern = data[HemisphereType.Southern.code];
-                            let southernElement = renderGrid('hemisphereTable', AllMonths, southern.month);
-                            southernElement.dataset.hemisphere = HemisphereType.Southern.code;
-
-                            let southernTitle = document.createElement('span');
-                            southernTitle.className = 'col gridBase gridTitle justify-content-center align-self-center mr-1';
-                            southernTitle.textContent = HemisphereType.getName(HemisphereType.Southern.code);
-                            southernElement.insertBefore(southernTitle, southernElement.firstChild);
-
-                            return northernElement.outerHTML + southernElement.outerHTML;
-                        }
-                    }
-                ]
-            };
-
-        case 'bug':
-            return {
-
-            };
-
-        default:
-            break;
-    }
-}
-
 const utils = {
-    refreshStyleByCurrentValue: function (className, currentValue) {
-        var rootTables = document.getElementsByClassName(className);
-        if (!rootTables) {
-            console.error(`${className} table is not exists`);
-            return;
-        }
+    /**
+     * @param {FishData} data
+     */
+    generateCardItem: function (data) {
+        if ('content' in document.createElement('template')) {
+            let t = document.querySelector('template#cardItem');
+            let root = t.content;
+            /** @type {Element} */
+            let clone = document.importNode(root, true);
+            /** @type {HTMLSpanElement} */
+            let p;
 
-        for (let tIdx = 0; tIdx < rootTables.length; tIdx++) {
-            const root = rootTables[tIdx];
-            let spans = root.getElementsByTagName('span');
-            for (let sIdx = 0; sIdx < spans.length; sIdx++) {
-                const span = spans[sIdx];
-                if (span.dataset.id == currentValue) {
-                    span.classList.add('gridCurrent');
-                } else {
-                    span.classList.remove('gridCurrent');
-                }
-            }
+            // title
+            let title = clone.querySelector('#title');
+            title.textContent = data.name;
+            // sub title
+            let subTitle = clone.querySelector('#subTitle');
+            subTitle.textContent = data.engName;
+
+            // icon
+            let icon = clone.querySelector('#icon');
+            icon.setAttribute('src', `res/fish/${data.icon}`);
+
+            let info = clone.querySelector('#info');
+
+            // price
+            let price = document.createElement('li');
+            price.className = 'list-group-item';
+            price.textContent = `${getText('price')}：${CurrencyFormatter.format(data.price)}`;
+            info.appendChild(price);
+
+            // location
+            let location = document.createElement('li');
+            location.className = 'list-group-item';
+            location.textContent = `${getText('location')}：${Locations.getName(data.location)}`;
+            info.appendChild(location);
+
+            // size of shadow
+            let size = document.createElement('li');
+            size.className = 'list-group-item';
+            size.textContent = `${getText('size')}：${ShadowSize.getName(data.shadowSize)}`;
+            info.appendChild(size);
+
+            // time
+
+            return clone;
+        }
+        else {
+            // 不支援 template
         }
     },
 
-    updateHemisphere: function (v) {
-        var rootTables = document.getElementsByClassName('hemisphereTable ');
-        if (!rootTables) {
-            console.error(`${className} table is not exists`);
-            return;
+    /**
+     * @param {FishData} data
+     */
+    generateItem: function (data) {
+        function newItemText(content) {
+            let span = document.createElement('span');
+            span.textContent = content;
+            return span;
         }
 
-        for (let tIdx = 0; tIdx < rootTables.length; tIdx++) {
-            const root = rootTables[tIdx];
-            // console.log(root.dataset.hemisphere, ' ', v);
+        if ('content' in document.createElement('template')) {
+            let t = document.querySelector('template#gridItem');
+            let root = t.content;
+            /** @type {Element} */
+            let clone = document.importNode(root, true);
+            /** @type {HTMLSpanElement} */
+            let span;
 
-            if (v != HemisphereType.Both.code && root.dataset.hemisphere != v) {
-                root.classList.add('d-none');
-                root.classList.add('invisible');
-            } else {
-                root.classList.remove('d-none');
-                root.classList.remove('invisible');
-            }
+            // title
+            let title = clone.querySelector('span#title');
+            title.textContent = `${data.name} (${data.engName})`
+            // icon
+            let icon = clone.querySelector('img#icon');
+            icon.setAttribute('src', `res/fish/${data.icon}`);
+
+            let info = clone.querySelector('div#info');
+            // price
+            let price = document.createElement('div');
+            price.className = 'item-text';
+            span = newItemText(`${getText('price')}：`);
+            price.appendChild(span);
+            span = newItemText(CurrencyFormatter.format(data.price));
+            price.appendChild(span);
+            info.appendChild(price);
+            // location
+            let location = document.createElement('div');
+            location.className = 'item-text';
+            span = newItemText(`${getText('location')}：`);
+            location.appendChild(span);
+            span = newItemText(Locations.getName(data.location));
+            location.appendChild(span);
+            info.appendChild(location);
+            // size of shadow
+            let size = document.createElement('div');
+            size.className = 'item-text';
+            span = newItemText(`${getText('size')}：`);
+            size.appendChild(span);
+            span = newItemText(ShadowSize.getName(data.shadowSize));
+            size.appendChild(span);
+            info.appendChild(size);
+
+            // time
+
+            return clone;
+        }
+        else {
+            // 不支援 template
         }
     },
-};
-
-
+}
