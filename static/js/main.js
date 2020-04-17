@@ -203,7 +203,7 @@ $(document).ready(async () => {
     try {
         init();
 
-        const response = await axios.get('./res/fish.json');
+        const response = await axios.get('res/fish.json');
         /** @type {Array<FishData>} */
         const dataset = response.data.data;
         let itemRoot = document.getElementById('itemRoot');
