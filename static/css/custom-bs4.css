@@ -20,3 +20,11 @@
 a {
   color: rgba(151, 233, 184, 1);
 }
+
+.card-footer {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  text-align: center;
+  align-items: center;
+  align-content: center;
+}

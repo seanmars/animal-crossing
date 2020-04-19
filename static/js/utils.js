@@ -31,16 +31,7 @@ function* range(start, end, max) {
 
     yield* range(start + 1, end, max);
 }
-/**
- * <div class="item-body">
-                        <span class="item-title h5">title</span>
-                        <img class="item-icon" src="files/fish/龍睛金魚.webp">
-                        <span class="item-text">
-                            <span>info:</span>
-                            <span>content</span>
-                        </span>
-                    </div>
- */
+
 const utils = {
     /**
      * @param {FishData} data
@@ -50,43 +41,70 @@ const utils = {
         if ('content' in document.createElement('template')) {
             let t = document.querySelector('template#itemCardTemplate');
             let root = t.content.querySelector('#itemCard');
-            /** @type {Element} */
-            let clone = document.importNode(root, true);
+            /** @type {HTMLDivElement} */
+            let resultDiv = document.importNode(root, true);
+
+            // data-toggle="collapse" data-target="#collapseExample"
+            resultDiv.dataset.toggle = 'collapse';
+            resultDiv.dataset.target = `data-${data.id}`;
+
+            resultDiv.dataset.raw = JSON.stringify({
+                north: data.hemisphere[1].month,
+                south: data.hemisphere[2].month,
+                time: data.time
+            });
 
             // title
-            let title = clone.querySelector('#title');
+            let title = resultDiv.querySelector('#title');
             title.textContent = data.name;
             // sub title
-            let subTitle = clone.querySelector('#subTitle');
+            let subTitle = resultDiv.querySelector('#subTitle');
             subTitle.textContent = data.engName;
 
             // icon
-            let icon = clone.querySelector('#icon');
+            let icon = resultDiv.querySelector('#icon');
             icon.setAttribute('src', `res/fish/${data.icon}`);
 
-            let info = clone.querySelector('#info');
-
+            let info = resultDiv.querySelector('#info');
             // price
             let price = document.createElement('li');
             price.className = 'list-group-item';
             price.textContent = `${getText('price')}：${CurrencyFormatter.format(data.price)}`;
             info.appendChild(price);
-
             // location
             let location = document.createElement('li');
             location.className = 'list-group-item';
             location.textContent = `${getText('location')}：${Locations.getName(data.location)}`;
             info.appendChild(location);
-
             // size of shadow
             let size = document.createElement('li');
             size.className = 'list-group-item';
             size.textContent = `${getText('size')}：${ShadowSize.getName(data.shadowSize)}`;
             info.appendChild(size);
 
+            let moreInfo = resultDiv.querySelector('#moreInfo');
+            moreInfo.id = `data-${data.id}`;
+            moreInfo.className = 'collapse';
             // time
+            let time = document.createElement('div');
+            for (let idx = 0; idx < AllHours.length; idx++) {
+                const t = AllHours[idx];
+                let span = document.createElement('span');
+                span.className = 'gridBase';
+                span.textContent = t;
 
-            return clone;
+                if (data.time.includes(t)) {
+                    span.classList.add('enable');
+                } else {
+                    span.classList.add('disable');
+                }
+
+                time.appendChild(span);
+            }
+
+            moreInfo.appendChild(time);
+
+            return resultDiv;
         }
         else {
             // 不支援 template

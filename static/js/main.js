@@ -197,7 +197,9 @@ function init() {
 
 function clearAllSelectedCard() {
     let itemCards = document.getElementsByName('itemCard');
-    itemCards.forEach(x => x.classList.remove('selected'));
+    itemCards.forEach(x => {
+        x.classList.remove('selected');
+    });
 }
 
 $(document).ready(async () => {
@@ -214,8 +216,16 @@ $(document).ready(async () => {
             let item = utils.generateCardItem(data);
             item.addEventListener('click', (e) => {
                 clearAllSelectedCard();
+
                 let card = $(e.target).closest('#itemCard').first();
-                if (card) { card.addClass('selected'); }
+                if (card) {
+                    card.addClass('selected');
+                    let targetId = card.data('target');
+                    card.find(`#${targetId}`).collapse('toggle');
+                }
+
+                let raw = card.data('raw');
+                console.log(raw);
             });
             container.appendChild(item);
         });

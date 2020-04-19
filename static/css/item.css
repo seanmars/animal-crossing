@@ -36,8 +36,7 @@ img.item-icon {
   padding: 0.3rem !important;
 }
 
-#itemCard.selected,
-#itemCard.selected .list-group-item {
+#itemCard.selected .card-header {
   background-color: rgba(151, 233, 184, 1);
 }
 

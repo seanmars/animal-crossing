@@ -24,6 +24,8 @@ hr {
 }
 
 .gridBase {
+  display: inline-block;
+  text-align: center;
   font-size: 1rem;
   padding: 0 !important;
   margin: 0 !important;
