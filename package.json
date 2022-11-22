@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bootstrap": "^5.1.0",
     "datatables.net-bs4": "^3.2.2",
     "datatables.net-buttons-bs4": "^1.7.1",
